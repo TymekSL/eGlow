@@ -2,11 +2,11 @@ plugins {
     id 'java'
     id 'maven-publish'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
-    id 'com.rikonardo.papermake' version '1.0.3'
+    id 'io.freefair.lombok' version '8.0.1'
 }
 
 group = 'com.github.mrgraycat'
-version = '3.2.1-PRE1'
+version = '3.2.8'
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
@@ -16,16 +16,19 @@ repositories {
     mavenCentral()
     //Spigot
     maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
-    //Vault, YAMLAssist
-    maven { url = 'https://jitpack.io' }
     //TAB
     maven { url = 'https://repo.kryptonmc.org/releases' }
+    //Vault
+    maven { url = 'https://jitpack.io' }
     //Citizens
     maven { url = 'https://repo.citizensnpcs.co/' }
+    //FancyNpcs
+    maven { url = 'https://repo.fancyplugins.de/releases' }
     //PlaceholderAPI
     maven { url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
     //iDisguise
-    maven { url = 'http://repo.robingrether.de/'
+    maven {
+        url = 'http://repo.robingrether.de/'
         allowInsecureProtocol = true
     }
     //LibsDisguises
@@ -38,22 +41,23 @@ repositories {
 }
 
 dependencies {
-    compileOnly ('org.spigotmc:spigot-api:1.19.1-R0.1-SNAPSHOT')
-    compileOnly ('com.github.NEZNAMY:TAB:3.1.0')
-    compileOnly ('net.luckperms:api:5.4')
-    compileOnly ('net.citizensnpcs:citizens-main:2.0.30-SNAPSHOT')
-    compileOnly ('me.clip:placeholderapi:2.10.9')
-    compileOnly ('de.robingrether.idisguise:idisguise-core:5.8.2')
-    compileOnly ('LibsDisguises:LibsDisguises:10.0.28')
-    compileOnly ('us.myles:viaversion:3.2.1')
-    compileOnly ('com.github.MilkBowl:VaultAPI:1.7')
-    compileOnly ('org.xerial:sqlite-jdbc:3.39.3.0')
-    compileOnly ('mysql:mysql-connector-java:8.0.30')
-    compileOnly ('io.netty:netty-transport:4.1.82.Final')
-    implementation ('org.bstats:bstats-bukkit:3.0.0')
-    implementation ('com.github.NEZNAMY:YamlAssist:1.0.5') {
-        exclude group: 'org.yaml', module: 'snakeyaml'
-    }
+    compileOnly('org.spigotmc:spigot-api:1.20.3-R0.1-SNAPSHOT')
+    compileOnly('me.neznamy:tab-api:4.0.0')
+    compileOnly('me.neznamy:tab-shared:4.0.0')
+    compileOnly('net.luckperms:api:5.4')
+    compileOnly('net.citizensnpcs:citizens-main:2.0.30-SNAPSHOT')
+    compileOnly('de.oliver:FancyNpcs:2.0.4')
+    compileOnly('me.clip:placeholderapi:2.10.9')
+    compileOnly('de.robingrether.idisguise:idisguise-core:5.8.2')
+    compileOnly('LibsDisguises:LibsDisguises:10.0.28')
+    compileOnly('us.myles:viaversion:3.2.1')
+    compileOnly('com.github.MilkBowl:VaultAPI:1.7')
+    compileOnly('org.xerial:sqlite-jdbc:3.42.0.0')
+    compileOnly('mysql:mysql-connector-java:8.0.32')
+    compileOnly('io.netty:netty-transport:4.1.86.Final')
+    compileOnly('it.unimi.dsi:fastutil:8.5.11')
+    compileOnly('com.googlecode.json-simple:json-simple:1.1.1')
+    //compileOnly fileTree(dir: '/lib/')
 }
 
 //Clean up unneeded external libraries
@@ -66,6 +70,10 @@ configurations.compileOnly {
     exclude group: 'com.github.NEZNAMY.TAB', module: 'tab-bungeecord'
     exclude group: 'com.github.NEZNAMY.TAB', module: 'tab-velocity'
     exclude group: 'com.github.NEZNAMY.TAB', module: 'velocity-1.1.0'
+    exclude group: 'com.github.montlikadani.TabList', module: 'bungee'
+    exclude group: 'com.github.montlikadani.TabList', module: 'global'
+    exclude group: 'com.github.montlikadani.TabList', module: 'tablist-sponge7'
+    exclude group: 'com.github.montlikadani.TabList', module: 'tablist-sponge8'
     exclude group: 'com.github.oshi', module: 'oshi-core'
     exclude group: 'com.google.code.findbugs', module: 'jsr305'
     exclude group: 'com.google.code.gson', module: 'gson'
@@ -92,16 +100,14 @@ configurations.compileOnly {
     exclude group: 'io.netty', module: 'netty-transport-classes-epoll'
     exclude group: 'io.netty', module: 'netty-transport-native-epoll'
     exclude group: 'io.netty', module: 'netty-transport-native-unix-common'
-    exclude group: 'it.unimi.dsi', module: 'fastutil'
     exclude group: 'javax.inject', module: 'javax.inject'
     exclude group: 'jline', module: 'jline'
     exclude group: 'junit', module: 'junit'
     exclude group: 'me.neznamy', module: 'yamlassist'
+    exclude group: 'net.byteflux', module: 'libby-bukkit'
     exclude group: 'net.java.dev.jna', module: 'jna'
     exclude group: 'net.java.dev.jna', module: 'jna-platform'
-    exclude group: 'net.kyori', module: 'adventure-api'
     exclude group: 'net.kyori', module: 'adventure-key'
-    exclude group: 'net.kyori', module: 'adventure-text-minimessage'
     exclude group: 'net.kyori', module: 'event-api'
     exclude group: 'net.kyori', module: 'event-method'
     exclude group: 'net.kyori', module: 'examination-api'
@@ -137,10 +143,10 @@ configurations.compileOnly {
     exclude group: 'org.jetbrains', module: 'annotations'
     exclude group: 'org.ow2.asm', module: 'asm'
     exclude group: 'org.ow2.asm', module: 'asm'
-    exclude group: 'org.projectlombok', module: 'lombok'
     exclude group: 'org.slf4j', module: 'jcl-over-slf4j'
     exclude group: 'org.slf4j', module: 'slf4j-api'
     exclude group: 'org.spigotmc', module: 'spigot'
+    exclude group: 'org.yaml', module: 'snakeyaml'
     exclude group: 'us.myles', module: 'viaversion-bukkit'
     exclude group: 'us.myles', module: 'viaversion-bungee'
     exclude group: 'us.myles', module: 'viaversion-common'
@@ -153,8 +159,6 @@ configurations.compileOnly {
 shadowJar {
     archiveClassifier.set('')
     archiveVersion.set('')
-    relocate("me.neznamy.yamlassist", "me.MrGraycat.eGlow.Config.YAMLAssist")
-    relocate("org.bstats", "me.MrGraycat.eGlow.Addon.bStats")
     minimize()
 }
 tasks.build.dependsOn tasks.shadowJar
